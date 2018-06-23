@@ -1,0 +1,18 @@
+{
+   "company" :"ABC company",
+   "owner" :  "Doug Dog",
+   "address" : [
+      {  "line1": "Tower 22",
+         "Line2" :"Magar street",
+         "Zipcode" : 4567,
+         "State" : "California",
+         "Country": "US"
+       },
+	{  "line1": "Tower 23",
+         "Line2" :"Magar street",
+         "Zipcode" : 2345,
+         "State" : "New York",
+         "Country": "US"
+       }
+     ]
+}
