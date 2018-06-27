@@ -1,4 +1,4 @@
-package com.example.functional.test;
+package com.example.test.framework;
 
 import java.io.File;
 import java.io.FileOutputStream;

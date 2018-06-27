@@ -1,11 +1,16 @@
-package com.example.functional.test;
+package com.example.test.framework;
 
+import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.example.mock.pojo.TenantConfig;
 
@@ -135,11 +140,30 @@ public class EntityExcelBuilder {
 			}
 			return true;
 		default:
-			return false;
-			
+			return false;			
 		}
 	}
 	
+	
+	public Map<Integer,String> getOutputMessages(String file,String entityName){
+		Map<Integer,String> expected = new HashMap<Integer,String>();
+		try{
+		FileInputStream fs = new FileInputStream(file);
+	    XSSFWorkbook wb = new XSSFWorkbook(fs);
+	    XSSFSheet sheet = wb.getSheet(entityName);
+	    
+	    for(int i =1; i <= sheet.getLastRowNum();i++){
+	    	
+	    	Row row = sheet.getRow(i);
+	    	expected.put((int)row.getCell(0).getNumericCellValue(), row.getCell(row.getLastCellNum()-1).getStringCellValue());
+	    }
+	   	    
+		}catch(Exception e){
+			//TODO log Exception
+			e.printStackTrace();
+		}
+		return expected;
+	}
 	
 	
 	public void addExpectedMessage(String entityName,long primaryKey, String errorMessage){

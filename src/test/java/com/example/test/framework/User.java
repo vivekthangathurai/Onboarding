@@ -1,4 +1,4 @@
-package com.example.functional.test;
+package com.example.test.framework;
 
 public class User {    
     private String id;

@@ -2,10 +2,10 @@ package com.example.mock.service;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
 import java.io.File;
 
@@ -23,7 +23,8 @@ public class CustomerOnboardingService {
 
 	public void uploadSuccess(){
 		stubFor(post("/customers/upload")
-			    .willReturn(ok()));
+			    .willReturn(aResponse()
+		                .withBodyFile("datafile_output.xlsx")));
 	
 	}
 	
