@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -25,7 +24,11 @@ public class EntityExcelBuilder {
 		writer.createWorkbook();
 		
 	}
-	
+	/**
+	 * creates data for each field with mandatory value missing.
+	 * @param entityName or sheet name
+	 * @param pk - primary key needs to be passed ? true or false
+	 */
 	public void buildDataForMissingMandatoryFields(String entityName,boolean pk){
 		List<DynamicField> fields = reader.mapEntityToFields().get(entityName);
 		XSSFSheet sheet = writer.addSheet(entityName);
@@ -59,7 +62,7 @@ public class EntityExcelBuilder {
 				}
 				
 			}
-			addExpectedMessage(entityName,custId,"error message");
+			addExpectedMessage(entityName,"error message");
 			if(pk){
 				row.createCell(row.getLastCellNum()).setCellValue(custId);
 			}
@@ -77,6 +80,12 @@ public class EntityExcelBuilder {
 		return fields.stream().filter( f -> f.getRequired().equals(new Boolean(true))).collect(Collectors.toList());
 	}
 	
+	/**
+	 * create data with only mandatory fields.
+	 * Creates a row in data xls
+	 * @param entityName
+	 * @param pk
+	 */
 	public void buildOnlyRequiredField(String entityName,boolean pk){
 		
 		List<DynamicField> fields = reader.mapEntityToFields().get(entityName);
@@ -103,7 +112,7 @@ public class EntityExcelBuilder {
 			}	
 	    }
 		if(!pk){
-			addExpectedMessage(entityName,custId,"success message");
+			addExpectedMessage(entityName,"success message");
 		}
 		if(pk){
 		row.createCell(row.getLastCellNum()).setCellValue(custId);
@@ -117,6 +126,16 @@ public class EntityExcelBuilder {
 		AUTO,BLANK,NON_BLANK,NON_BLANK_LENGTH
 	}
 	
+	/**
+	 * set cell value based on type 
+	 * BLANK - leave blank
+	 * NON_BLANK - not blank
+	 * AUTO - Auto generated value.
+	 * @param cell
+	 * @param type
+	 * @param cellvalue
+	 * @return
+	 */
 	public boolean setCellValue(Cell cell,String type,CellValue cellvalue){
 
 		switch(type){
@@ -166,7 +185,7 @@ public class EntityExcelBuilder {
 	}
 	
 	
-	public void addExpectedMessage(String entityName,long primaryKey, String errorMessage){
+	public void addExpectedMessage(String entityName,String errorMessage){
 		XSSFSheet sheet = writer.getSheet(entityName);
 		Row row = sheet.getRow(sheet.getLastRowNum());
 		row.createCell(row.getLastCellNum()+1).setCellValue(errorMessage);
