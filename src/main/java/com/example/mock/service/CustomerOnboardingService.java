@@ -27,6 +27,12 @@ public class CustomerOnboardingService {
 		                .withBodyFile("datafile_output.xlsx")));
 	
 	}
+	public void uploadPref(){
+		stubFor(post("/customers/upload")
+			    .willReturn(aResponse()
+		                .withBodyFile("datafile_pref_output.xlsx")));
+	
+	}
 	
 	public void addCustomer(){
 				

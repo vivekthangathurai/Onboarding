@@ -29,17 +29,21 @@ public class TestTenantConfig {
 		client = new CustomerOnboardingServiceClient();
 	}
 	
+	public TenantConfig getTenantConfig() throws Exception{
+		
+		service.getTenantConfig("1234");
+	     HttpResponse response = client.getConfig("1234");
+	     String json = EntityUtils.toString(response.getEntity());
+	     
+	     Gson gson = new Gson();
+	     TenantConfig config = gson.fromJson(json,TenantConfig.class);
+	     return config;
+	}
+	
 	public void createTestData() throws Exception{
 
-	 service.getTenantConfig("1234");
-     HttpResponse response = client.getConfig("1234");
-     String json = EntityUtils.toString(response.getEntity());
-     
-     Gson gson = new Gson();
-     TenantConfig config = gson.fromJson(json,TenantConfig.class);
      ExcelWriter writer = new ExcelWriter("datafile_input.xlsx");
-     
-     EntityExcelBuilder builder = new EntityExcelBuilder(config, writer);
+     EntityExcelBuilder builder = new EntityExcelBuilder(getTenantConfig(), writer);
      
      builder.buildDataForMissingMandatoryFields("customer", false);
      builder.buildOnlyRequiredField("customer",false);
@@ -51,6 +55,22 @@ public class TestTenantConfig {
      compareResults(expected, actual);
      
 	}
+	
+	public void createDataPerformance() throws Exception{
+
+	     ExcelWriter writer = new ExcelWriter("datafile_pref_input.xlsx");
+	     EntityExcelBuilder builder = new EntityExcelBuilder(getTenantConfig(), writer);
+	     for(int i=0 ; i < 1000; i++){
+	    	 builder.buildOnlyRequiredField("customer",false);
+	     }
+	     builder.write(); 
+	     getPrefUploadResult("datafile_pref_output.xlsx");	     
+	     Map<Integer,String> expected = builder.getOutputMessages("datafile_pref_input.xlsx","customer");
+	     Map<Integer,String> actual = builder.getOutputMessages("datafile_pref_output.xlsx","customer");	     
+	     compareResults(expected, actual);
+	     
+		}
+	
 	
 	public void compareResults(Map<Integer,String> expected, Map<Integer,String> actual){
 		
@@ -68,20 +88,36 @@ public class TestTenantConfig {
 		});
 	}
 	
-	public void getUploadResult(String filePath) throws IOException{
+	public void getUploadResult(String filePath){
 		service.uploadSuccess();
-		HttpResponse response = client.upload();
-		InputStream is = response.getEntity().getContent();
-		
-		FileOutputStream fos = new FileOutputStream(new File(filePath));
-		int inByte;
-		while((inByte = is.read()) != -1)
-		     fos.write(inByte);
-		is.close();
-		fos.close();
+		download(filePath);
 	}
 	
+	public void getPrefUploadResult(String filePath){
+		service.uploadPref();
+		
+		download(filePath);
+		
+	}
 	
+	private void download(String filePath){
+		HttpResponse response = client.upload();
+		try{
+			
+			InputStream is = response.getEntity().getContent();
+			
+			FileOutputStream fos = new FileOutputStream(new File(filePath));
+			int inByte;
+			while((inByte = is.read()) != -1)
+			     fos.write(inByte);
+			is.close();
+			fos.close();
+		}catch(IOException ioe){
+			//TODO log exception
+			ioe.printStackTrace();
+		}
+	}
+		
 	
 	public static void main(String[] args) throws Exception{
 		TestTenantConfig testData = new TestTenantConfig();
