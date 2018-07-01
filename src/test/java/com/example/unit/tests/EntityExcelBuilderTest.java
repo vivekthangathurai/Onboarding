@@ -26,7 +26,7 @@ public class EntityExcelBuilderTest {
 		try{
 		System.out.println(new File("./").getAbsolutePath());
 		builder = new EntityExcelBuilder(new Gson().
-				fromJson(FileUtils.readFileToString(new File("./src/test/resources/tenant_config_test.json")),TenantConfig.class),writer);
+				fromJson(FileUtils.readFileToString(new File("./src/test/resources/tenant_config_test.json"),"UTF-8"),TenantConfig.class),writer);
 		}catch(IOException e){
 		  throw new IllegalArgumentException("could not read file",e);
 		}

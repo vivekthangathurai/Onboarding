@@ -22,6 +22,7 @@ public class TestTenantConfig {
 	private WireMockServer wireMockServer;
 	private CustomerOnboardingService service;
 	private CustomerOnboardingServiceClient client;
+	
 	TestTenantConfig(){
 		wireMockServer = new WireMockServer();
 		wireMockServer.start();
@@ -45,8 +46,12 @@ public class TestTenantConfig {
      ExcelWriter writer = new ExcelWriter("datafile_input.xlsx");
      EntityExcelBuilder builder = new EntityExcelBuilder(getTenantConfig(), writer);
      
-     builder.buildDataForMissingMandatoryFields("customer", false);
-     builder.buildOnlyRequiredField("customer",false);
+     
+     
+     builder.buildDataForMissingMandatoryFields("customer");
+     builder.buildOnlyRequiredField("customer",null);
+     builder.dataForValidation("customer");
+    
      getUploadResult("datafile_output.xlsx");
      builder.write();
      Map<Integer,String> expected = builder.getOutputMessages("datafile_input.xlsx","customer");
@@ -56,12 +61,12 @@ public class TestTenantConfig {
      
 	}
 	
-	public void createDataPerformance() throws Exception{
+	public void createDataPerformanceAndValidate() throws Exception{
 
 	     ExcelWriter writer = new ExcelWriter("datafile_pref_input.xlsx");
 	     EntityExcelBuilder builder = new EntityExcelBuilder(getTenantConfig(), writer);
 	     for(int i=0 ; i < 1000; i++){
-	    	 builder.buildOnlyRequiredField("customer",false);
+	    	 builder.buildOnlyRequiredField("customer",null);
 	     }
 	     builder.write(); 
 	     getPrefUploadResult("datafile_pref_output.xlsx");	     

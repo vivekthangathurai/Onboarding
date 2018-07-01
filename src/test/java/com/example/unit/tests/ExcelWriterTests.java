@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.NoSuchElementException;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,11 @@ public void getSheetNeagtive(){
 public void getSheetPositive(){
 	writer.addSheet("test");
 	Assert.assertTrue("created sheet should be present",writer.getSheet("test").getSheetName().equals("test"));
+}
+
+@After()
+public void delete(){
+	new File(FILENAME).delete();
 }
 
 }
