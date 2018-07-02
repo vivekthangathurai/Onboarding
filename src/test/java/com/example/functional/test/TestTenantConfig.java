@@ -61,6 +61,11 @@ public class TestTenantConfig {
      
 	}
 	
+	/**
+	 * create data for performance testing
+	 * 1000 records of customer to be uploaded, can be increased to 5000 or 50,000
+	 * @throws Exception
+	 */
 	public void createDataPerformanceAndValidate() throws Exception{
 
 	     ExcelWriter writer = new ExcelWriter("datafile_pref_input.xlsx");
@@ -74,7 +79,22 @@ public class TestTenantConfig {
 	     Map<Integer,String> actual = builder.getOutputMessages("datafile_pref_output.xlsx","customer");	     
 	     compareResults(expected, actual);
 	     
-		}
+	}
+	/**
+	 * Create 50000 records for 1000 tenants each.
+	 * @throws Exception
+	 */
+	public void createPerformanceData() throws Exception{
+		
+	 for(int j=0 ; j < 1000 ;j++){	
+		ExcelWriter writer = new ExcelWriter("datafile_pref_input"+ String.valueOf(j)+".xlsx");
+	     EntityExcelBuilder builder = new EntityExcelBuilder(getTenantConfig(), writer);
+	     for(int i=0 ; i < 50000; i++){
+	    	 builder.buildOnlyRequiredField("customer",null);
+	     }
+	     builder.write(); 
+	 }
+	}
 	
 	
 	public void compareResults(Map<Integer,String> expected, Map<Integer,String> actual){

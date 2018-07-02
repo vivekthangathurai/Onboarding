@@ -11,6 +11,9 @@ public class TestScalability {
 	
 		TestTenantConfig testData = new TestTenantConfig();
 		testData.createDataPerformanceAndValidate();
+		
+		//creates data for 5000 tenants and 50000 customer each.
+		testData.createPerformanceData();
 	}
 
 
